@@ -50,6 +50,7 @@ async def entrypoint(ctx: JobContext):
 
     tts = cartesia.TTS(
         voice="248be419-c632-4f23-adf1-5324ed7dbf1d",
+        model="sonic",
     )
     agent = VoicePipelineAgent(
         vad=ctx.proc.userdata["vad"],
@@ -85,13 +86,10 @@ async def entrypoint(ctx: JobContext):
                 logger.warning(f"Voice {voice_id} not found")
                 return
             if "embedding" in voice_data:
-                model = "sonic-english"
                 language = "en"
                 if "language" in voice_data and voice_data["language"] != "en":
                     language = voice_data["language"]
-                    model = "sonic-multilingual"
                 tts._opts.voice = voice_data["embedding"]
-                tts._opts.model = model
                 tts._opts.language = language
                 # allow user to confirm voice change as long as no one is speaking
                 if not (is_agent_speaking or is_user_speaking):
