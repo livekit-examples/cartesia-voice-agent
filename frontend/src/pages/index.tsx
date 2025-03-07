@@ -69,7 +69,7 @@ export function HomeInner() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main
-        className={`relative flex overflow-x-hidden flex-col justify-center items-center h-full w-full bg-white repeating-square-background`}
+        className={`relative flex overflow-x-hidden flex-col justify-center items-center h-full w-full bg-background repeating-square-background`}
       >
         <AnimatePresence>
           {toastMessage && (

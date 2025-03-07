@@ -27,7 +27,7 @@ export const MicrophoneButton = ({
     <Button
       state="secondary"
       size="medium"
-      className="flex items-center justify-center gap-2 bg-white"
+      className="flex items-center justify-center gap-2"
       onClick={() => {}}
     >
       <TrackToggle
@@ -44,13 +44,10 @@ export const MicrophoneButton = ({
           barWidth={3}
           minBarHeight={2}
           maxBarHeight={16}
-          accentColor={"gray"}
-          accentShade={950}
           frequencies={localMultibandVolume}
-          borderRadius={0}
           gap={2}
         />
-        <div className="w-[2px] bg-black h-4"></div>
+        <div className="w-[2px] bg-white/20 h-4"></div>
         <DeviceSelector kind="audioinput" />
       </TrackToggle>
     </Button>

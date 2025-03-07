@@ -6,10 +6,7 @@ type AgentMultibandAudioVisualizerProps = {
   barWidth: number;
   minBarHeight: number;
   maxBarHeight: number;
-  accentColor: string;
-  accentShade?: number;
   frequencies: Float32Array[] | number[][];
-  borderRadius: number;
   gap: number;
 };
 
@@ -18,10 +15,7 @@ export const AgentMultibandAudioVisualizer = ({
   barWidth,
   minBarHeight,
   maxBarHeight,
-  accentColor,
-  accentShade,
   frequencies,
-  borderRadius,
   gap,
 }: AgentMultibandAudioVisualizerProps) => {
   const summedFrequencies = frequencies.map((bandFrequencies) => {
@@ -62,27 +56,21 @@ export const AgentMultibandAudioVisualizer = ({
     return () => clearTimeout(timeout);
   }, [state, summedFrequencies.length, thinkingDirection, thinkingIndex]);
 
-  const isReady = !(
-    state === "disconnected" ||
-    state === "connecting" ||
-    state === "initializing"
-  );
   return (
     <div
-      className={`flex flex-row items-center`}
+      className={`${
+        state === "disconnected" ? "opacity-10" : ""
+      } flex flex-row items-center`}
       style={{
         gap: gap + "px",
       }}
     >
       {summedFrequencies.map((frequency, index) => {
         const isCenter = index === Math.floor(summedFrequencies.length / 2);
-        let color = `cartesia-500`;
         let transform;
-        color = `${accentColor}${accentShade ? "-" + accentShade : ""}`;
-
         return (
           <div
-            className={`bg-${color} ${
+            className={`transition-colors duration-250 ease-out bg-foreground ${
               isCenter && state === "listening" ? "animate-pulse" : ""
             }`}
             key={"frequency-" + index}
@@ -90,15 +78,7 @@ export const AgentMultibandAudioVisualizer = ({
               height:
                 minBarHeight + frequency * (maxBarHeight - minBarHeight) + "px",
               width: barWidth + "px",
-              transition:
-                "background-color 0.35s ease-out, transform 0.25s ease-out",
               transform: transform,
-              borderRadius: borderRadius + "px",
-              boxShadow: isReady
-                ? `${0.1 * barWidth}px ${
-                    0.1 * barWidth
-                  }px 0px 0px rgba(0, 0, 0, 0.1)`
-                : "none",
             }}
           ></div>
         );
