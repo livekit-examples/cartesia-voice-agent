@@ -11,7 +11,7 @@ type PlaygroundHeader = {
 export const Header = ({ logo, title, height }: PlaygroundHeader) => {
   return (
     <div
-      className={`flex gap-4 py-4 px-4 text-cyan-500 justify-between items-center shrink-0 border-b-2 border-black`}
+      className={`flex gap-4 py-4 px-4 text-foreground justify-between items-center shrink-0 border-b border-white/20`}
       style={{
         height: height + "px",
       }}
@@ -22,7 +22,7 @@ export const Header = ({ logo, title, height }: PlaygroundHeader) => {
             {logo ?? <LKLogo />}
           </a>
         </div>
-        <div className="md:basis-1/2 md:text-center text-xs md:text-base font-semibold text-black">
+        <div className="md:basis-1/2 md:text-center text-xs md:text-base font-semibold">
           {title}
         </div>
       </div>

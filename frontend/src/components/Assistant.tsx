@@ -146,9 +146,6 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
           <Button
             state="secondary"
             size="medium"
-            style={{
-              backgroundColor: showVoices ? "rgba(0, 0, 0, 0.1)" : "",
-            }}
             onClick={() => {
               setShowVoices(!showVoices);
             }}
@@ -215,10 +212,7 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
             barWidth={isMobile ? mobileBarWidth : desktopBarWidth}
             minBarHeight={isMobile ? mobileMinBarHeight : desktopMinBarHeight}
             maxBarHeight={isMobile ? mobileMaxBarHeight : desktopMaxBarHeight}
-            accentColor={!agentAudioTrack ? "gray" : "cartesia"}
-            accentShade={!agentAudioTrack ? 200 : 500}
             frequencies={!agentAudioTrack ? defaultVolumes : subscribedVolumes}
-            borderRadius={4}
             gap={16}
           />
         </div>
@@ -249,11 +243,11 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
     return (
       <div className="flex flex-col h-full w-full items-start">
         {isAgentConnected && voices && voices.length > 0 && (
-          <div className="w-full text-black py-4 relative">
-            <div className="sticky bg-white py-2 top-0 flex flex-row justify-between items-center px-4 text-xs uppercase tracking-wider">
+          <div className="w-full text-foreground py-4 relative">
+            <div className="sticky bg-background py-2 top-0 flex flex-row justify-between items-center px-4 text-xs uppercase tracking-wider">
               <h3 className="font-mono font-semibold text-sm">Voices</h3>
             </div>
-            <div className="px-4 py-2 text-xs text-black leading-normal">
+            <div className="px-4 py-2 text-xs text-foreground leading-normal">
               <div className={"flex flex-col text-left h-full"}>
                 {voices.map((voice) => (
                   <button
@@ -262,8 +256,8 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
                     }}
                     className={`w-full text-left px-3 py-2 font-mono text-lg md:text-sm ${
                       voice.id === currentVoiceId
-                        ? "bg-cartesia-500 text-white"
-                        : "hover:bg-gray-100"
+                        ? "bg-foreground text-background"
+                        : "hover:bg-white/10"
                     }`}
                     key={voice.id}
                   >
@@ -303,7 +297,7 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
         </div>
         <Tile
           padding={false}
-          className={`h-full w-full basis-1/4 items-start overflow-y-auto hidden max-w-[480px] border-l-2 border-black ${
+          className={`h-full w-full basis-1/4 items-start overflow-y-auto hidden max-w-[480px] border-l border-white/20 ${
             showVoices ? "md:flex" : "md:hidden"
           }`}
           childrenClassName="h-full grow items-start"

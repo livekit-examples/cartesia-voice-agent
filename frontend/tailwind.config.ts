@@ -44,8 +44,8 @@ const config: Config = {
       border: "hsl(var(--border))",
       input: "hsl(var(--input))",
       ring: "hsl(var(--ring))",
-      background: "hsl(var(--background))",
-      foreground: "hsl(var(--foreground))",
+      background: "rgba(var(--background))",
+      foreground: "rgba(var(--foreground))",
       primary: {
         DEFAULT: "hsl(var(--primary))",
         foreground: "hsl(var(--primary-foreground))",
@@ -76,16 +76,6 @@ const config: Config = {
       },
     },
     extend: {
-      boxShadow: {
-        "solid-offset": "3px 3px 0px 0px rgba(0, 0, 0, 1)",
-        "solid-offset-hover": "4px 4px 0px 0px rgba(0, 0, 0, 1)",
-        "solid-offset-active": "1px 1px 0px 0px rgba(0, 0, 0, 1)",
-        "solid-offset-accent": "3px 3px 0px 0px " + cartesia[500],
-        "solid-offset-accent-active": "3px 3px 0px 0px " + cartesia[500],
-        "solid-offset-destructive": "3px 3px 0px 0px " + colors.red[500],
-        "solid-offset-destructive-active": "1px 1px 0px 0px " + colors.red[500],
-        "solid-offset-destructive-hover": "4px 4px 0px 0px " + colors.red[500],
-      },
       fontFamily: {
         spline: ['"Spline Sans"', ...defaultTheme.fontFamily.sans],
         mono: ['"Spline Sans Mono"', ...defaultTheme.fontFamily.mono],
