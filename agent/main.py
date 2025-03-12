@@ -49,8 +49,7 @@ async def entrypoint(ctx: JobContext):
     cartesia_voices: List[dict[str, Any]] = ctx.proc.userdata["cartesia_voices"]
 
     tts = cartesia.TTS(
-        voice="248be419-c632-4f23-adf1-5324ed7dbf1d",
-        model="sonic",
+        model="sonic-2",
     )
     agent = VoicePipelineAgent(
         vad=ctx.proc.userdata["vad"],
