@@ -37,5 +37,5 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
 
   // for LiveKit Cloud Sandbox
   sandboxId: undefined,
-  agentName: 'cartesia-demo-dev',
+  agentName: 'cartesia-demo',
 };
