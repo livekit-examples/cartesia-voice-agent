@@ -6,7 +6,7 @@ import type { AppConfig } from '@/app-config';
 import { ChatTranscript } from '@/components/app/chat-transcript';
 import { PreConnectMessage } from '@/components/app/preconnect-message';
 import { TileLayout } from '@/components/app/tile-layout';
-import { VoiceSelector, AVAILABLE_AGENT_VOICES } from '@/components/app/voice-selector';
+import { AVAILABLE_AGENT_VOICES, VoiceSelector } from '@/components/app/voice-selector';
 import {
   AgentControlBar,
   type ControlBarControls,
