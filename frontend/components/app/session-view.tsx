@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useVoiceAssistant } from '@livekit/components-react';
 import type { AppConfig } from '@/app-config';
 import { ChatTranscript } from '@/components/app/chat-transcript';
 import { PreConnectMessage } from '@/components/app/preconnect-message';
 import { TileLayout } from '@/components/app/tile-layout';
-import { VoiceSelector, parseAgentVoices } from '@/components/app/voice-selector';
+import { VoiceSelector, AVAILABLE_AGENT_VOICES } from '@/components/app/voice-selector';
 import {
   AgentControlBar,
   type ControlBarControls,
@@ -86,17 +85,12 @@ export const SessionView = ({
   useDebugMode({ enabled: IN_DEVELOPMENT });
 
   const messages = useChatMessages();
-  const { agentAttributes } = useVoiceAssistant();
   const [chatOpen, setChatOpen] = useState(false);
   const [isVoicePanelOpen, setIsVoicePanelOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const hasAutoOpenedVoicePanel = useRef(false);
 
-  const agentVoices = useMemo(
-    () => parseAgentVoices(agentAttributes?.voices),
-    [agentAttributes?.voices]
-  );
-  const hasVoices = agentVoices.length > 0;
+  const hasVoices = AVAILABLE_AGENT_VOICES.length > 0;
 
   useEffect(() => {
     if (typeof window === 'undefined') {
