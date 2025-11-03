@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ParticipantEvent } from 'livekit-client';
-import { useLocalParticipant } from '@livekit/components-react';
+import { useLocalParticipant, useVoiceAssistant } from '@livekit/components-react';
 import { XIcon } from '@phosphor-icons/react/dist/ssr';
 import { Button } from '@/components/livekit/button';
 import { ScrollArea } from '@/components/livekit/scroll-area/scroll-area';
@@ -22,16 +22,45 @@ interface VoiceSelectorProps {
   showCloseButton?: boolean;
 }
 
-export const AVAILABLE_AGENT_VOICES: AgentVoice[] = [
-  { id: '0834f3df-e650-4766-a20c-5a93a43aa6e3', name: 'Leo', description: undefined },
-  { id: '6776173b-fd72-460d-89b3-d85812ee518d', name: 'Jace', description: undefined },
-  { id: 'c961b81c-a935-4c17-bfb3-ba2239de8c2f', name: 'Kyle', description: undefined },
-  { id: 'f4a3a8e4-694c-4c45-9ca0-27caf97901b5', name: 'Gavin', description: undefined },
-  { id: 'cbaf8084-f009-4838-a096-07ee2e6612b1', name: 'Maya', description: undefined },
-  { id: '6ccbfb76-1fc6-48f7-b71d-91ac6298247b', name: 'Tessa', description: undefined },
-  { id: 'cc00e582-ed66-4004-8336-0175b85c85f6', name: 'Dana', description: undefined },
-  { id: '26403c37-80c1-4a1a-8692-540551ca2ae5', name: 'Marian', description: undefined },
-];
+export function parseAgentVoices(rawVoices?: string | null): AgentVoice[] {
+  if (!rawVoices) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(rawVoices);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .map((voice) => {
+        if (typeof voice !== 'object' || voice === null) {
+          return undefined;
+        }
+
+        const id = String((voice as Record<string, unknown>).id ?? '');
+        const name = String((voice as Record<string, unknown>).name ?? '');
+
+        if (!id || !name) {
+          return undefined;
+        }
+
+        return {
+          id,
+          name,
+          description:
+            typeof (voice as Record<string, unknown>).description === 'string'
+              ? ((voice as Record<string, unknown>).description as string)
+              : undefined,
+        } satisfies AgentVoice;
+      })
+      .filter((voice): voice is AgentVoice => !!voice);
+  } catch (error) {
+    console.warn('Unable to parse agent voices attribute', error);
+    return [];
+  }
+}
 
 export function VoiceSelector({
   className,
@@ -39,9 +68,11 @@ export function VoiceSelector({
   onVoiceSelected,
   showCloseButton = false,
 }: VoiceSelectorProps) {
+  const { agentAttributes } = useVoiceAssistant();
   const { localParticipant } = useLocalParticipant();
 
-  const voices = AVAILABLE_AGENT_VOICES;
+  const rawVoices = agentAttributes?.voices ?? null;
+  const voices = useMemo<AgentVoice[]>(() => parseAgentVoices(rawVoices), [rawVoices]);
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
 
   useEffect(() => {
@@ -117,6 +148,9 @@ export function VoiceSelector({
           {hasVoices &&
             voices.map((voice) => {
               const isSelected = selectedVoiceId === voice.id;
+              const displayName = voice.name.includes(' - ')
+                ? voice.name.split(' - ')[0]?.trim() ?? voice.name
+                : voice.name;
 
               return (
                 <button
@@ -130,7 +164,7 @@ export function VoiceSelector({
                     isSelected && 'bg-foreground text-background hover:bg-foreground'
                   )}
                 >
-                  <span>{voice.name}</span>
+                  <span>{displayName}</span>
                   {voice.description && !isSelected && (
                     <span className="text-muted-foreground font-sans text-[11px] leading-snug normal-case">
                       {voice.description}
