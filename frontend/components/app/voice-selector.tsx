@@ -149,7 +149,7 @@ export function VoiceSelector({
             voices.map((voice) => {
               const isSelected = selectedVoiceId === voice.id;
               const displayName = voice.name.includes(' - ')
-                ? voice.name.split(' - ')[0]?.trim() ?? voice.name
+                ? (voice.name.split(' - ')[0]?.trim() ?? voice.name)
                 : voice.name;
 
               return (
