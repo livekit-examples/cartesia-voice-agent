@@ -18,7 +18,7 @@ export const Header = ({ logo, title, height }: PlaygroundHeader) => {
     >
       <div className="flex flex-col md:flex-row md:items-center md:gap-3 md:basis-2/3">
         <div className="flex md:basis-1/2">
-          <a href="https://www.cartesia.ai" target="_blank">
+          <a href="https://cartesia.ai" target="_blank">
             {logo ?? <LKLogo />}
           </a>
         </div>

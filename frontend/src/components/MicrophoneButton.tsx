@@ -1,11 +1,5 @@
-import {
-  TrackToggle,
-  useLocalParticipant,
-  useMaybeRoomContext,
-} from "@livekit/components-react";
+import { TrackToggle, useLocalParticipant } from "@livekit/components-react";
 import { Track } from "livekit-client";
-import { useEffect, useState } from "react";
-import { Button } from "./button/Button";
 import { DeviceSelector } from "./DeviceSelector";
 import { MicrophoneOffSVG, MicrophoneOnSVG } from "./ui/icons";
 import { AgentMultibandAudioVisualizer } from "./visualization/AgentMultibandAudioVisualizer";
@@ -16,24 +10,15 @@ type MicrophoneButtonProps = {
 export const MicrophoneButton = ({
   localMultibandVolume,
 }: MicrophoneButtonProps) => {
-  const room = useMaybeRoomContext();
   const localParticipant = useLocalParticipant();
-  const [isMuted, setIsMuted] = useState(localParticipant.isMicrophoneEnabled);
-  useEffect(() => {
-    setIsMuted(localParticipant.isMicrophoneEnabled === false);
-  }, [localParticipant.isMicrophoneEnabled]);
+  const isMuted = localParticipant.isMicrophoneEnabled === false;
 
   return (
-    <Button
-      state="secondary"
-      size="medium"
-      className="flex items-center justify-center gap-2"
-      onClick={() => {}}
-    >
+    <div className="flex flex-row  medium font-mono uppercase border-foreground bg-transparent text-foreground hover:bg-white/10 text-sm font-semibold transition-all border ease-out duration-250 items-center justify-center">
       <TrackToggle
         source={Track.Source.Microphone}
         className={
-          "flex items-center justify-center gap-2 h-full " +
+          "flex items-center justify-center gap-2 h-full py-2 pl-2 " +
           (isMuted ? "opacity-50" : "")
         }
         showIcon={false}
@@ -47,9 +32,9 @@ export const MicrophoneButton = ({
           frequencies={localMultibandVolume}
           gap={2}
         />
-        <div className="w-[2px] bg-white/20 h-4"></div>
-        <DeviceSelector kind="audioinput" />
+        <div className="w-0.5 bg-white/20 h-4 ml-0.5"></div>
       </TrackToggle>
-    </Button>
+      <DeviceSelector kind="audioinput" />
+    </div>
   );
 };

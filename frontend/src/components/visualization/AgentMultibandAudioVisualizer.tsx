@@ -24,15 +24,22 @@ export const AgentMultibandAudioVisualizer = ({
   });
 
   const [thinkingIndex, setThinkingIndex] = useState(
-    Math.floor(summedFrequencies.length / 2)
+    Math.floor(summedFrequencies.length / 2),
   );
   const [thinkingDirection, setThinkingDirection] = useState<"left" | "right">(
-    "right"
+    "right",
   );
+  const [prevState, setPrevState] = useState(state);
+
+  if (prevState !== state) {
+    setPrevState(state);
+    if (state !== "thinking") {
+      setThinkingIndex(Math.floor(summedFrequencies.length / 2));
+    }
+  }
 
   useEffect(() => {
     if (state !== "thinking") {
-      setThinkingIndex(Math.floor(summedFrequencies.length / 2));
       return;
     }
     const timeout = setTimeout(() => {

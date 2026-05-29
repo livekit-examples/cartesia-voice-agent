@@ -35,7 +35,7 @@ export const DeviceSelector = ({ kind }: DeviceSelectorProps) => {
   return (
     <div className="relative">
       <button
-        className={`flex hover:opacity-50 ${activeClassName} transition-all duration-100`}
+        className={`flex hover:opacity-50 ${activeClassName} transition-all duration-100 p-2`}
         onClick={(e) => {
           setShowMenu(!showMenu);
           e.stopPropagation();
@@ -44,7 +44,7 @@ export const DeviceSelector = ({ kind }: DeviceSelectorProps) => {
         <ChevronSVG />
       </button>
       <div
-        className="absolute left-0 bottom-12 text-black text-left border-black border-2 z-10 w-[280px]"
+        className="absolute left-0 bottom-12 text-black text-left border-black border-2 z-10 w-70"
         style={{
           display: showMenu ? "block" : "none",
         }}

@@ -1,15 +1,15 @@
+import Assistant from "@/components/Assistant";
+import { PlaygroundToast, ToastType } from "@/components/toast/PlaygroundToast";
+import { ConnectionProvider, useConnection } from "@/hooks/useConnection";
 import {
   LiveKitRoom,
   RoomAudioRenderer,
   StartAudio,
 } from "@livekit/components-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import Head from "next/head";
+import Image from "next/image";
 import { useCallback, useState } from "react";
-
-import Assistant from "@/components/Assistant";
-import { PlaygroundToast, ToastType } from "@/components/toast/PlaygroundToast";
-import { ConnectionProvider, useConnection } from "@/hooks/useConnection";
 
 export default function Home() {
   return (
@@ -34,7 +34,7 @@ export function HomeInner() {
     async (c: boolean) => {
       c ? connect() : disconnect();
     },
-    [connect, disconnect]
+    [connect, disconnect],
   );
 
   return (
@@ -62,7 +62,7 @@ export function HomeInner() {
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta property="og:image:width" content="1600" />
         <meta property="og:image:height" content="836" />
@@ -101,7 +101,7 @@ export function HomeInner() {
         >
           <Assistant
             title={title}
-            logo={<img src="/cartesia-logo.svg" alt="Cartesia logo" />}
+            logo={<Image height={24} width={107} src="/cartesia-wordmark-field.svg" alt="Cartesia" />}
             onConnect={handleConnect}
           />
           <RoomAudioRenderer />

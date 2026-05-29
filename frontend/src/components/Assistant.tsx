@@ -12,12 +12,13 @@ import {
   useTracks,
   useVoiceAssistant,
 } from "@livekit/components-react";
-import { AnimatePresence, motion } from "framer-motion";
 import { ConnectionState, LocalParticipant, Track } from "livekit-client";
+import { AnimatePresence, motion } from "motion/react";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "./button/Button";
 import { MicrophoneButton } from "./MicrophoneButton";
 import { MenuSVG } from "./ui/icons";
+import { VoiceSelectionPanel } from "./VoiceSelectionPanel";
 
 export interface AssistantProps {
   title?: string;
@@ -47,10 +48,8 @@ const barCount = 5;
 const defaultVolumes = Array.from({ length: barCount }, () => [0.0]);
 
 export default function Assistant({ title, logo, onConnect }: AssistantProps) {
-  const [voices, setVoices] = useState<Voice[]>([]);
   const { localParticipant } = useLocalParticipant();
   const [currentVoiceId, setCurrentVoiceId] = useState<string>("");
-  const [showVoices, setShowVoices] = useState(true);
   const windowSize = useWindowResize();
   const {
     agent: agentParticipant,
@@ -58,16 +57,22 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
     audioTrack: agentAudioTrack,
     agentAttributes,
   } = useVoiceAssistant();
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = windowSize.width < mobileWindowWidth;
   const isAgentConnected = agentParticipant !== undefined;
+
+  const [showVoices, setShowVoices] = useState(true);
+  const [prevIsMobile, setPrevIsMobile] = useState(isMobile);
+  if (prevIsMobile !== isMobile) {
+    setPrevIsMobile(isMobile);
+    setShowVoices(!isMobile);
+  }
+
+  const voices: Voice[] = agentAttributes?.voices
+    ? JSON.parse(agentAttributes.voices)
+    : [];
 
   const roomState = useConnectionState();
   const tracks = useTracks();
-
-  useEffect(() => {
-    setShowVoices(windowSize.width >= mobileWindowWidth);
-    setIsMobile(windowSize.width < mobileWindowWidth);
-  }, [windowSize]);
 
   useEffect(() => {
     if (roomState === ConnectionState.Connected) {
@@ -75,28 +80,21 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
     }
   }, [localParticipant, roomState]);
 
-  // use voices provided by the agent
-  useEffect(() => {
-    if (agentAttributes?.voices) {
-      setVoices(JSON.parse(agentAttributes.voices));
-    }
-  }, [agentAttributes?.voices]);
-
   const subscribedVolumes = useMultibandTrackVolume(
     agentAudioTrack?.publication.track,
-    barCount
+    barCount,
   );
 
   const localTracks = tracks.filter(
-    ({ participant }) => participant instanceof LocalParticipant
+    ({ participant }) => participant instanceof LocalParticipant,
   );
   const localMicTrack = localTracks.find(
-    ({ source }) => source === Track.Source.Microphone
+    ({ source }) => source === Track.Source.Microphone,
   );
 
   const localMultibandVolume = useMultibandTrackVolume(
     localMicTrack?.publication.track,
-    9
+    9,
   );
 
   const onSelectVoice = useCallback(
@@ -106,7 +104,7 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
         voice: voiceId,
       });
     },
-    [localParticipant, setCurrentVoiceId]
+    [localParticipant, setCurrentVoiceId],
   );
 
   const audioTileContent = useMemo(() => {
@@ -239,39 +237,6 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
     agentState,
   ]);
 
-  const voiceSelectionPanel = useMemo(() => {
-    return (
-      <div className="flex flex-col h-full w-full items-start">
-        {isAgentConnected && voices && voices.length > 0 && (
-          <div className="w-full text-foreground py-4 relative">
-            <div className="sticky bg-background py-2 top-0 flex flex-row justify-between items-center px-4 text-xs uppercase tracking-wider">
-              <h3 className="font-mono font-semibold text-sm">Voices</h3>
-            </div>
-            <div className="px-4 py-2 text-xs text-foreground leading-normal">
-              <div className={"flex flex-col text-left h-full"}>
-                {voices.map((voice) => (
-                  <button
-                    onClick={() => {
-                      onSelectVoice(voice.id);
-                    }}
-                    className={`w-full text-left px-3 py-2 font-mono text-lg md:text-sm ${
-                      voice.id === currentVoiceId
-                        ? "bg-foreground text-background"
-                        : "hover:bg-white/10"
-                    }`}
-                    key={voice.id}
-                  >
-                    {voice.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }, [isAgentConnected, voices, currentVoiceId, onSelectVoice]);
-
   return (
     <>
       <Header
@@ -297,12 +262,17 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
         </div>
         <Tile
           padding={false}
-          className={`h-full w-full basis-1/4 items-start overflow-y-auto hidden max-w-[480px] border-l border-white/20 ${
+          className={`h-full w-full basis-1/4 items-start overflow-y-auto hidden max-w-120 border-l border-white/20 ${
             showVoices ? "md:flex" : "md:hidden"
           }`}
           childrenClassName="h-full grow items-start"
         >
-          {voiceSelectionPanel}
+          <VoiceSelectionPanel
+            isAgentConnected={isAgentConnected}
+            voices={voices}
+            currentVoiceId={currentVoiceId}
+            onSelectVoice={onSelectVoice}
+          />
         </Tile>
         <div
           className={`bg-white/80 backdrop-blur-lg absolute w-full items-start transition-all duration-100 md:hidden ${
@@ -311,9 +281,16 @@ export default function Assistant({ title, logo, onConnect }: AssistantProps) {
           style={{ height: `calc(100% - ${headerHeight}px)` }}
         >
           <div className="overflow-y-scroll h-full w-full">
-            <div className="pb-32">{voiceSelectionPanel}</div>
+            <div className="pb-32">
+              <VoiceSelectionPanel
+                isAgentConnected={isAgentConnected}
+                voices={voices}
+                currentVoiceId={currentVoiceId}
+                onSelectVoice={onSelectVoice}
+              />
+            </div>
           </div>
-          <div className="pointer-events-none absolute z-10 bottom-0 w-full h-64 bg-gradient-to-t from-white to-transparent"></div>
+          <div className="pointer-events-none absolute z-10 bottom-0 w-full h-64 bg-linear-to-t from-white to-transparent"></div>
         </div>
       </div>
     </>
