@@ -1,7 +1,8 @@
 # Cartesia Voice Agent Example
 
 > [!IMPORTANT]
-> This repository has been archived. For up-to-date information on integrating Cartesia with LiveKit, please visit our docs site ([STT docs](https://docs.livekit.io/agents/models/stt/cartesia/), [TTS docs](https://docs.livekit.io/agents/models/tts/cartesia/)) or see Cartesia's [integration guide](https://docs.cartesia.ai/integrations/live-kit).
+> This repository has been archived. For up-to-date information on integrating Cartesia with LiveKit, see our [STT](https://docs.livekit.io/agents/models/stt/cartesia/) and
+  [TTS](https://docs.livekit.io/agents/models/tts/cartesia/) docs, or Cartesia's [integration guide](https://docs.cartesia.ai/integrations/live-kit).
 
 This is a demo of a LiveKit [Voice Pipeline Agent](https://docs.livekit.io/agents/voice-agent/voice-pipeline/) using [Cartesia](https://www.cartesia.ai/) and GPT-4o-mini.
 
